@@ -1,11 +1,12 @@
-board = [' ' for x in range(10)]
 
 
-def insertLetter(letter, pos):
+
+def updateBoard(letter, pos, board):
     board[pos] = letter
+    return board
 
 
-def spaceIsFree(pos):
+def spaceIsFree(pos, board):
     return board[pos] == ' '
 
 
@@ -23,23 +24,24 @@ def printBoard(board):
     print('   |   |')
 
 
-def isWinner(bo, le):
-    return (bo[7] == le and bo[8] == le and bo[9] == le) or (bo[4] == le and bo[5] == le and bo[6] == le) or \
-            (bo[1] == le and bo[2] == le and bo[3] == le) or (bo[1] == le and bo[4] == le and bo[7] == le) or \
-            (bo[2] == le and bo[5] == le and bo[8] == le) or (bo[3] == le and bo[6] == le and bo[9] == le) or \
-            (bo[1] == le and bo[5] == le and bo[9] == le) or (bo[3] == le and bo[5] == le and bo[7] == le)
+def isWinner(board, le):
+    return (board[7] == le and board[8] == le and board[9] == le) or (board[4] == le and board[5] == le and board[6] == le) or \
+            (board[1] == le and board[2] == le and board[3] == le) or (board[1] == le and board[4] == le and board[7] == le) or \
+            (board[2] == le and board[5] == le and board[8] == le) or (board[3] == le and board[6] == le and board[9] == le) or \
+            (board[1] == le and board[5] == le and board[9] == le) or (board[3] == le and board[5] == le and board[7] == le)
 
 
-def playerMove():
+def playerMove(board):
     run = True
     while run:
         move = input('Please select a position to place an \'X\' (1-9): ')
         try:
             move = int(move)
             if move > 0 and move < 10:
-                if spaceIsFree(move):
+                if spaceIsFree(move, board):
                     run = False
-                    insertLetter('X', move)
+                    #updateBoard('X', move)
+                    return move
                 else:
                     print('Sorry, this space is occupied!')
             else:
@@ -48,15 +50,15 @@ def playerMove():
             print('Please type a number!')
 
 
-def pcMove():
+def pcMove(board):
     possibleMoves = [index for index, letter in enumerate(board) if letter == ' ' and index != 0]
     move = 0
 
-    for let in ['O', 'X']:
+    for letter in ['O', 'X']:
         for i in possibleMoves:
             boardCopy = board[:]
-            boardCopy[i] = let
-            if isWinner(boardCopy, let):
+            boardCopy[i] = letter
+            if isWinner(boardCopy, letter):
                 move = i
                 return move
 
@@ -100,27 +102,32 @@ def isBoardFull(board):
 
 def mainLoop():
     print('Welcome to Tic Tac Toe!')
+    board = [' ' for x in range(10)]
     printBoard(board)
 
     while not (isBoardFull(board)):
-        if not (isWinner(board, 'O')):
-            playerMove()
-            printBoard(board)
-        else:
+        # if pc is the winner
+        if (isWinner(board, 'O')):
             print('Sorry, O\'s won this time!')
             break
-
-        if not (isWinner(board, 'X')):
-            move = pcMove()
+        else:
+            # player makes move
+            move = playerMove(board)
+            updateBoard('X', move, board)
+            printBoard(board)
+        #if player is the winner
+        if (isWinner(board, 'X')):
+            print('X\'s won this time! Good Job!')
+            break
+        else:
+            # pc makes move
+            move = pcMove(board)
             if move == 0:
                 print('Tie Game!')
             else:
-                insertLetter('O', move)
+                updateBoard('O', move, board)
                 print('Computer placed an \'O\' in position', move, ':')
                 printBoard(board)
-        else:
-            print('X\'s won this time! Good Job!')
-            break
 
     if isBoardFull(board):
         print('Tie Game!')
