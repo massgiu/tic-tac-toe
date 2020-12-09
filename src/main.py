@@ -1,6 +1,6 @@
+import random
 
-
-
+#Board is a list with 10 empy spaces; the first one is always empty
 def updateBoard(letter, pos, board):
     board[pos] = letter
     return board
@@ -37,7 +37,7 @@ def playerMove(board):
         move = input('Please select a position to place an \'X\' (1-9): ')
         try:
             move = int(move)
-            if move > 0 and move < 10:
+            if 1 <= move <= 9:
                 if spaceIsFree(move, board):
                     run = False
                     #updateBoard('X', move)
@@ -87,17 +87,17 @@ def pcMove(board):
 
 
 def selectRandom(li):
-    import random
     ln = len(li)
     r = random.randrange(0, ln)
     return li[r]
 
 
 def isBoardFull(board):
-    if board.count(' ') > 1:
-        return False
-    else:
+    #only first space must be empty
+    if board.count(' ') == 1:
         return True
+    else:
+        return False
 
 
 def mainLoop():
