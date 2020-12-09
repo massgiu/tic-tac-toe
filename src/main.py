@@ -49,7 +49,7 @@ def playerMove():
 
 
 def pcMove():
-    possibleMoves = [x for x, letter in enumerate(board) if letter == ' ' and x != 0]
+    possibleMoves = [index for index, letter in enumerate(board) if letter == ' ' and index != 0]
     move = 0
 
     for let in ['O', 'X']:
@@ -98,7 +98,7 @@ def isBoardFull(board):
         return True
 
 
-def main():
+def mainLoop():
     print('Welcome to Tic Tac Toe!')
     printBoard(board)
 
@@ -126,11 +126,13 @@ def main():
         print('Tie Game!')
 
 
-while True:
-    answer = input('Do you want to play again? (Y/N)')
-    if answer.lower() == 'y' or answer.lower == 'yes':
-        board = [' ' for x in range(10)]
-        print('-----------------------------------')
-        main()
-    else:
-        break
+def main():
+    while True:
+        answer = input('Do you want to play again? (Y/N)')
+        if answer.lower() == 'y' or answer.lower == 'yes':
+            print('-----------------------------------')
+            mainLoop()
+        else:
+            break
+
+main()
