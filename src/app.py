@@ -76,16 +76,14 @@ class App:
     def playing_events(self):
         if self.board.count(' ') == len(self.board):
             self.draw_board()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         self.running = False
         if self.first_move_to_you:
             self.user_move()
             self.pc_move()
-            # self.win_check()
         elif not self.first_move_to_you:
             self.pc_move()
-            # self.win_check()
             self.user_move()
 
     def draw_board(self):
