@@ -30,7 +30,7 @@ class App:
                 #self.playing_update()
                 #self.playing_draw()
             elif self.state == 'game over':
-                self.running = False
+                pass
                 #self.game_over_win_events()
                 #self.game_over_update()
                 #self.game_over_draw()
@@ -82,14 +82,12 @@ class App:
         #     else:
         if self.first_move_to_you:
             self.user_move()
-            self.win_check()
             self.pc_move()
-            self.win_check()
+            # self.win_check()
         elif not self.first_move_to_you:
             self.pc_move()
-            self.win_check()
+            # self.win_check()
             self.user_move()
-            self.win_check()
 
 
     def draw_board(self):
@@ -134,6 +132,7 @@ class App:
                     self.board = updateBoard('X', pos, self.board)
                     print('You placed an \'X\' in position', pos, ':')
                     self.playing_draw(pos,'X')
+                    self.win_check()
                     self.user_made_move = True
 
     def win_check(self):
@@ -162,6 +161,7 @@ class App:
             else:
                 self.board = updateBoard('O', move, self.board)
                 print('Computer placed an \'O\' in position', move, ':')
+                self.win_check()
                 # printBoard(board)
 
     def playing_draw(self,index,letter):
