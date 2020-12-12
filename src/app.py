@@ -68,8 +68,6 @@ class App:
                         START_FONT, True)
         Utils.draw_text('Press Y for you, P for pc', self.screen, (WIDTH // 2, HEIGHT // 2 + 160), START_TEXT_SIZE, LIGHT_BLUE,
                         START_FONT, True)
-        # Utils.draw_text('1 PLAYER ONLY', self.screen, (WIDTH // 2, HEIGHT // 2 + 170), START_TEXT_SIZE, LIGHT_BLUE,
-        #                 START_FONT, True)
         pygame.display.update()
 
     # Playing functions
@@ -136,7 +134,10 @@ class App:
                     self.user_made_move = True
 
     def win_check(self):
-        if not isBoardFull(self.board):
+        if isBoardFull(self.board):
+            print('Tie Game!')
+            self.state = 'game over'
+        else:
             # if pc is the winner
             if isWinner(self.board, 'O'):
                 print('Sorry, PC won this time!')
@@ -145,9 +146,6 @@ class App:
             elif isWinner(self.board, 'X'):
                 print('You won this time! Good Job!')
                 self.state = 'game over'
-        else:
-            print('Tie Game!')
-            self.state = 'game over'
 
     def pc_move(self):
         if self.user_made_move:
