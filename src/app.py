@@ -13,6 +13,8 @@ class App:
         self.state = 'start'
         self.clock = pygame.time.Clock()
         self.board = [' ' for x in range(10)]
+        self.first_move_to_you = None
+        self.user_made_move = False
         self.init()
 
     def init(self):
@@ -28,7 +30,7 @@ class App:
                 #self.playing_update()
                 #self.playing_draw()
             elif self.state == 'game over':
-                pass
+                self.running = False
                 #self.game_over_win_events()
                 #self.game_over_update()
                 #self.game_over_draw()
@@ -44,8 +46,13 @@ class App:
             if event.type == pygame.QUIT:
                 self.running = False
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_y]:
+            self.first_move_to_you = True
             self.state = 'playing'
+        elif keys[pygame.K_p]:
+            self.first_move_to_you = False
+            self.state = 'playing'
+            self.user_made_move = True
 
     def start_draw(self):
         self.screen.fill(WHITE)
@@ -57,21 +64,33 @@ class App:
         self.screen.blit(self.background, (WIDTH // 4, HEIGHT // 8 + 30))
         self.x_img = pygame.transform.scale(self.x_img, (80, 80))
         self.o_img = pygame.transform.scale(self.y_img, (80, 80))
-        Utils.draw_text('PUSH SPACE START', self.screen, (WIDTH // 2, HEIGHT // 2 + 130), START_TEXT_SIZE, OCHER,
+        Utils.draw_text('Who is gonna do the first move?', self.screen, (WIDTH // 2, HEIGHT // 2 + 130), START_TEXT_SIZE, OCHER,
                         START_FONT, True)
-        Utils.draw_text('1 PLAYER ONLY', self.screen, (WIDTH // 2, HEIGHT // 2 + 170), START_TEXT_SIZE, LIGHT_BLUE,
+        Utils.draw_text('Press Y for you, P for pc', self.screen, (WIDTH // 2, HEIGHT // 2 + 160), START_TEXT_SIZE, LIGHT_BLUE,
                         START_FONT, True)
+        # Utils.draw_text('1 PLAYER ONLY', self.screen, (WIDTH // 2, HEIGHT // 2 + 170), START_TEXT_SIZE, LIGHT_BLUE,
+        #                 START_FONT, True)
         pygame.display.update()
 
     # Playing functions
     def playing_events(self):
         if self.board.count(' ')==len(self.board):
             self.draw_board()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type is MOUSEBUTTONDOWN:
-                self.user_click()
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         self.running = False
+        #     else:
+        if self.first_move_to_you:
+            self.user_move()
+            self.win_check()
+            self.pc_move()
+            self.win_check()
+        elif not self.first_move_to_you:
+            self.pc_move()
+            self.win_check()
+            self.user_move()
+            self.win_check()
+
 
     def draw_board(self):
         # time.sleep(3)
@@ -86,66 +105,64 @@ class App:
         pygame.display.update()
         # draw_status()
 
-    def user_click(self):
-        # get coordinates of mouse click
-        x, y = pygame.mouse.get_pos()
-        if (x < WIDTH / 3) and (y < HEIGHT / 3):
-            pos = 1
-        elif (x < WIDTH / 3 * 2) and (y < HEIGHT / 3):
-            pos = 2
-        elif (x < WIDTH) and (y < HEIGHT / 3):
-            pos = 3
-        elif (x < WIDTH / 3) and (y < HEIGHT / 3 * 2):
-            pos = 4
-        elif (x < WIDTH / 3 * 2) and (y < HEIGHT / 3 * 2):
-            pos = 5
-        elif (x < WIDTH) and (y < HEIGHT / 3 * 2):
-            pos = 6
-        elif (x < WIDTH / 3) and (y < HEIGHT):
-            pos = 7
-        elif (x < WIDTH / 3 * 2) and (y < HEIGHT):
-            pos = 8
-        elif (x < WIDTH) and (y < HEIGHT):
-            pos = 9
-        else:
-            pos = None
-        if 1 <= pos <= 9:
-            self.board = updateBoard('X', pos, self.board)
-            print('You placed an \'X\' in position', pos, ':')
-            self.playing_draw(pos,'X')
-            self.playing_update()
+    def user_move(self):
+        for event in pygame.event.get():
+            if event.type is MOUSEBUTTONDOWN:
+                # get coordinates of mouse click
+                x, y = pygame.mouse.get_pos()
+                if (x < WIDTH / 3) and (y < HEIGHT / 3):
+                    pos = 1
+                elif (x < WIDTH / 3 * 2) and (y < HEIGHT / 3):
+                    pos = 2
+                elif (x < WIDTH) and (y < HEIGHT / 3):
+                    pos = 3
+                elif (x < WIDTH / 3) and (y < HEIGHT / 3 * 2):
+                    pos = 4
+                elif (x < WIDTH / 3 * 2) and (y < HEIGHT / 3 * 2):
+                    pos = 5
+                elif (x < WIDTH) and (y < HEIGHT / 3 * 2):
+                    pos = 6
+                elif (x < WIDTH / 3) and (y < HEIGHT):
+                    pos = 7
+                elif (x < WIDTH / 3 * 2) and (y < HEIGHT):
+                    pos = 8
+                elif (x < WIDTH) and (y < HEIGHT):
+                    pos = 9
+                else:
+                    pos = None
+                if 1 <= pos <= 9:
+                    self.board = updateBoard('X', pos, self.board)
+                    print('You placed an \'X\' in position', pos, ':')
+                    self.playing_draw(pos,'X')
+                    self.user_made_move = True
 
-    def playing_update(self):
+    def win_check(self):
         if not isBoardFull(self.board):
             # if pc is the winner
-            if (isWinner(self.board, 'O')):
+            if isWinner(self.board, 'O'):
                 print('Sorry, PC won this time!')
-                self.running = 'game over'
-                # break
-            # else:
-            # player makes move
-            # move = playerMove(self.board)
-            # updateBoard('X', move, self.board)
-            # printBoard(board)
+                self.state = 'game over'
             # if player is the winner
-            if (isWinner(self.board, 'X')):
+            elif isWinner(self.board, 'X'):
                 print('You won this time! Good Job!')
                 self.state = 'game over'
-                # break
-            else:
-                # pc makes move
-                move = pcMove(self.board)
-                self.playing_draw(move, 'O')
-                if move == 0:
-                    print('Tie Game!')
-                    self.state = 'game over'
-                else:
-                    updateBoard('O', move, self.board)
-                    print('Computer placed an \'O\' in position', move, ':')
-                    # printBoard(board)
         else:
             print('Tie Game!')
             self.state = 'game over'
+
+    def pc_move(self):
+        if self.user_made_move:
+            # pc makes move
+            move = pcMove(self.board)
+            self.playing_draw(move, 'O')
+            self.user_made_move = False
+            if move == 0:
+                print('Tie Game!')
+                self.state = 'game over'
+            else:
+                self.board = updateBoard('O', move, self.board)
+                print('Computer placed an \'O\' in position', move, ':')
+                # printBoard(board)
 
     def playing_draw(self,index,letter):
         if index == 1:

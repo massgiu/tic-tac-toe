@@ -5,15 +5,6 @@ from pygame.locals import *
 
 # declaring the global variables
 
-# for storing the 'x' or 'o' value as character
-XO = 'x'
-
-# storing the winner's value at any instant of code
-WINNER = None
-
-# to check if the game is a draw
-DRAW = None
-
 # to set width of the game window
 WIDTH = 400
 
