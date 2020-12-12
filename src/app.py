@@ -27,13 +27,13 @@ class App:
                 self.start_draw()
             elif self.state == 'playing':
                 self.playing_events()
-                #self.playing_update()
-                #self.playing_draw()
+                # self.playing_update()
+                # self.playing_draw()
             elif self.state == 'game over':
                 pass
-                #self.game_over_win_events()
-                #self.game_over_update()
-                #self.game_over_draw()
+                # self.game_over_win_events()
+                # self.game_over_update()
+                # self.game_over_draw()
             else:
                 self.running = False
             self.clock.tick(FPS)
@@ -64,20 +64,21 @@ class App:
         self.screen.blit(self.background, (WIDTH // 4, HEIGHT // 8 + 30))
         self.x_img = pygame.transform.scale(self.x_img, (80, 80))
         self.o_img = pygame.transform.scale(self.y_img, (80, 80))
-        Utils.draw_text('Who is gonna do the first move?', self.screen, (WIDTH // 2, HEIGHT // 2 + 130), START_TEXT_SIZE, OCHER,
+        Utils.draw_text('Who is gonna do the first move?', self.screen, (WIDTH // 2, HEIGHT // 2 + 130),
+                        START_TEXT_SIZE, OCHER,
                         START_FONT, True)
-        Utils.draw_text('Press Y for you, P for pc', self.screen, (WIDTH // 2, HEIGHT // 2 + 160), START_TEXT_SIZE, LIGHT_BLUE,
+        Utils.draw_text('Press Y for you, P for pc', self.screen, (WIDTH // 2, HEIGHT // 2 + 160), START_TEXT_SIZE,
+                        LIGHT_BLUE,
                         START_FONT, True)
         pygame.display.update()
 
     # Playing functions
     def playing_events(self):
-        if self.board.count(' ')==len(self.board):
+        if self.board.count(' ') == len(self.board):
             self.draw_board()
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         self.running = False
-        #     else:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
         if self.first_move_to_you:
             self.user_move()
             self.pc_move()
@@ -86,7 +87,6 @@ class App:
             self.pc_move()
             # self.win_check()
             self.user_move()
-
 
     def draw_board(self):
         # time.sleep(3)
@@ -129,7 +129,7 @@ class App:
                 if 1 <= pos <= 9:
                     self.board = updateBoard('X', pos, self.board)
                     print('You placed an \'X\' in position', pos, ':')
-                    self.playing_draw(pos,'X')
+                    self.playing_draw(pos, 'X')
                     self.win_check()
                     self.user_made_move = True
 
@@ -162,7 +162,7 @@ class App:
                 self.win_check()
                 # printBoard(board)
 
-    def playing_draw(self,index,letter):
+    def playing_draw(self, index, letter):
         if index == 1:
             posx, posy = 30, 30
         elif index == 2:
